@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>assets/UserInterface/main.ui</file>
+        <file>assets/Textures/bunny.png</file>
+        <file>assets/Textures/ximi_bunny.png</file>
+        <file>assets/UserInterface/devNotes.ui</file>
+        <file>assets/codename_redirects.json</file>
+        <file>assets/UserInterface/getResources_dialog.ui</file>
+        <file>assets/UserInterface/installation.ui</file>
+    </qresource>
+</RCC>
