@@ -72,6 +72,7 @@ int onInstall() {
                 rc.sideload(store.get("install.filename"), store.get("install.cleanname"));
                 rc.format_data();
             });
+            QMessageBox::warning(nullptr, "Warning", "Your device is commanded to reboot in recovery, installer will continue after 80 seconds\nPlease unlock your device if you have any types of screen locks.");
             timer->start(80000);
             store.save("status.text", "finished");
         });
@@ -129,7 +130,7 @@ int main(int argc, char *argv[])
 
 
     // Connect the deviceConnected signal to a slot
-    QObject::connect(&device, &GetDevice::deviceConnected, [deviceLabel, &isDisconnected, &pbar, &getFriendly, &productName, &sys](bool connected) {
+    QObject::connect(&device, &GetDevice::deviceConnected, [deviceLabel, &isDisconnected, &pbar, &getFriendly, &productName, &sys, &install](bool connected) {
         if (connected) {
             if (deviceLabel) {
                 QStringList ar2;
@@ -139,12 +140,19 @@ int main(int argc, char *argv[])
                 productName = getFriendly.extractProductName(out);
                 if (store.get("status.text") == "dr") {
                     deviceLabel->setText("Downloading the Operating System...");
+                    install->setEnabled(false);
                     pbar->setValue(25);
                 } else if (store.get("status.text") == "cf") {
                     deviceLabel->setText("Flashing the Operating System...");
+                    install->setEnabled(false);
                     pbar->setValue(55);
                 } else if (store.get("status.text") == "df") {
                     deviceLabel->setText("Download failed.");
+                    install->setEnabled(true);
+                    pbar->setValue(100);
+                } else if (store.get("status.text") == "finished") {
+                    deviceLabel->setText("Finished.");
+                    install->setEnabled(true);
                     pbar->setValue(100);
                 } else {
                     deviceLabel->setText("Device connected, codename: " + productName);
