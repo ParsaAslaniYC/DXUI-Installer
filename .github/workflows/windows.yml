@@ -22,9 +22,14 @@ jobs:
       with:
         version: '6.7.1'  # Adjust the version as needed
 
+    - name: Find Visual Studio installation path
+      id: find-vs
+      run: |
+        echo "::set-output name=vs_path::$(vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath)"
+
     - name: Set up MSVC environment
       run: |
-        cmd.exe /c "call `"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat`" x64 && set"
+        cmd.exe /c "call `"${{ steps.find-vs.outputs.vs_path }}\VC\Auxiliary\Build\vcvarsall.bat`" x64 && set"
 
     - name: Generate Makefile
       run: qmake -tp vc -config release
