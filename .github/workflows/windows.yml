@@ -1,0 +1,38 @@
+name: Build Windows
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: '6.7.1'  # Adjust the version as needed
+
+    - name: Generate Makefile
+      run: qmake -tp vc -config release
+
+    - name: Build the project
+      run: nmake
+
+    - name: Package the application
+      run: windeployqt DXUI-Installer.exe
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: DXUI-Installer-Windows
+        path: DXUI-Installer.exe
