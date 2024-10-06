@@ -1,0 +1,38 @@
+name: Build macOS
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: '6.7.1'  # Adjust the version as needed
+
+    - name: Generate Makefile
+      run: qmake -spec macx-clang -config release
+
+    - name: Build the project
+      run: make
+
+    - name: Package the application
+      run: macdeployqt DXUI-Installer.app -dmg
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: DXUI-Installer-macOS
+        path: DXUI-Installer.dmg
