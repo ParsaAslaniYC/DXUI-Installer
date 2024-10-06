@@ -66,14 +66,16 @@ int onInstall() {
         QObject::connect(&thread, &QThread::started, [&get, &urlString, &outputFilePath]() {
             get.download(urlString.toStdString(), outputFilePath.toStdString());
         });
-        QObject::connect(&get, &GetSF::downloadComplete, [&store, &rc, &timer](){
+        QObject::connect(&get, &GetSF::downloadComplete, [&store, &rc, &timer, &log](){
             store.save("status.text", "fos");
             QObject::connect(timer, &QTimer::timeout, [&store, &rc]() {
                 rc.sideload(store.get("install.filename"), store.get("install.cleanname"));
                 rc.format_data();
             });
+            log.logMessage(INFO, "Waiting for device '80-state'");
             QMessageBox::warning(nullptr, "Warning", "Your device is commanded to reboot in recovery, installer will continue after 80 seconds\nPlease unlock your device if you have any types of screen locks.");
             timer->start(80000);
+            log.logMessage(INFO, "Finished.");
             store.save("status.text", "finished");
         });
         QObject::connect(&get, &GetSF::downloadFailed, [&store]() {
