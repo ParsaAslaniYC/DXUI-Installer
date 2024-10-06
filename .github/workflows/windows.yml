@@ -17,25 +17,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Qt
+    - name: Set up Qt with MinGW
       uses: jurplel/install-qt-action@v2
       with:
         version: '6.7.1'  # Adjust the version as needed
-
-    - name: Find Visual Studio installation path
-      id: find-vs
-      run: |
-        echo "::set-output name=vs_path::$(vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath)"
-
-    - name: Set up MSVC environment
-      run: |
-        cmd.exe /c "call `"${{ steps.find-vs.outputs.vs_path }}\VC\Auxiliary\Build\vcvarsall.bat`" x64 && set"
+        toolchain: 'mingw'
 
     - name: Generate Makefile
-      run: qmake -tp vc -config release
+      run: qmake -config release
 
     - name: Build the project
-      run: nmake
+      run: mingw32-make
 
     - name: Package the application
       run: windeployqt DXUI-Installer.exe
