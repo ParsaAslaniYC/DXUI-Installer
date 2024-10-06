@@ -1,0 +1,38 @@
+name: Build Linux
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: '6.7.1'  # Adjust the version as needed
+
+    - name: Generate Makefile
+      run: qmake -config release
+
+    - name: Build the project
+      run: make
+
+    - name: Package the application
+      run: linuxdeployqt DXUI-Installer -appimage
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: DXUI-Installer-Linux
+        path: DXUI-Installer.AppImage
