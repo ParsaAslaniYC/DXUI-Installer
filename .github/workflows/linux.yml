@@ -3,10 +3,10 @@ name: Build DXUI-Installer
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   build:
@@ -33,7 +33,7 @@ jobs:
 
     - name: Build DXUI-Installer
       run: |
-        qmake DXUI-Installer.pro
+        qmake Installer.pro
         make
 
     - name: Upload build artifacts
