@@ -27,7 +27,7 @@ jobs:
 
     - name: Build DXUI-Installer
       run: |
-        qmake Installer.pro
+        qmake -qt=qt6 Installer.pro
         make
 
     - name: Upload build artifacts
