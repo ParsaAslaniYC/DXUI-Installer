@@ -19,13 +19,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential libgl1-mesa-dev python3-pip
-        pip3 install aqtinstall
-
-    - name: Install Qt 6.7.1
-      run: |
-        aqt install-qt linux desktop 6.7.1 gcc_64 -m qtbase
-        echo "export PATH=$GITHUB_WORKSPACE/6.7.1/gcc_64/bin:$PATH" >> $GITHUB_ENV
+        sudo apt-get install -y build-essential libgl1-mesa-dev qt6-base-dev
 
     - name: Build DXUI-Installer
       run: |
