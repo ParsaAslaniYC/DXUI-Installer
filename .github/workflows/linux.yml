@@ -22,10 +22,16 @@ jobs:
         sudo apt-get install -y build-essential libgl1-mesa-dev python3-pip
         pip3 install aqtinstall
 
+    - name: Get latest Qt version
+      id: get_latest_qt
+      run: |
+        LATEST_QT_VERSION=$(aqt list-qt linux desktop | tail -n 1)
+        echo "LATEST_QT_VERSION=$LATEST_QT_VERSION" >> $GITHUB_ENV
+
     - name: Install latest Qt
       run: |
-        aqt install $(aqt list-qt linux desktop latest | head -n 1) linux desktop -m qtbase qttools qtdeclarative qtmultimedia qtconnectivity qtquickcontrols2 qtimageformats qtsvg qtserialport qttranslations qtlocation qtwebchannel qtwebengine qtwebsockets qtwebview qt3d qtcharts qtdatavis3d qtvirtualkeyboard qtquick3d qtquicktimeline qtquickcontrols2 qtscxml qtnetworkauth qtremoteobjects qtpositioning qtsensors qtwebview
-        echo "export PATH=$GITHUB_WORKSPACE/$(ls -d */ | grep qt)/bin:$PATH" >> $GITHUB_ENV
+        aqt install $LATEST_QT_VERSION linux desktop -m qtbase qttools qtdeclarative qtmultimedia qtconnectivity qtquickcontrols2 qtimageformats qtsvg qtserialport qttranslations qtlocation qtwebchannel qtwebengine qtwebsockets qtwebview qt3d qtcharts qtdatavis3d qtvirtualkeyboard qtquick3d qtquicktimeline qtquickcontrols2 qtscxml qtnetworkauth qtremoteobjects qtpositioning qtsensors qtwebview
+        echo "export PATH=$GITHUB_WORKSPACE/$LATEST_QT_VERSION/gcc_64/bin:$PATH" >> $GITHUB_ENV
 
     - name: Build DXUI-Installer
       run: |
