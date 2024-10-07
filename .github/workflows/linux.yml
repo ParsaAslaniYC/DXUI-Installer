@@ -19,17 +19,13 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential libgl1-mesa-dev
+        sudo apt-get install -y build-essential libgl1-mesa-dev python3-pip
+        pip3 install aqtinstall
 
-    - name: Download and install Qt 6.7.1
+    - name: Install Qt 6.7.1
       run: |
-        wget https://download.qt.io/official_releases/qt/6.7/6.7.1/single/qt-everywhere-src-6.7.1.tar.xz
-        tar -xf qt-everywhere-src-6.7.1.tar.xz
-        cd qt-everywhere-src-6.7.1
-        ./configure -prefix $PWD/qtbase
-        make -j$(nproc)
-        sudo make install
-        echo "export PATH=$PWD/qtbase/bin:$PATH" >> $GITHUB_ENV
+        aqt install-qt linux desktop 6.7.1 gcc_64 -m qtbase
+        echo "export PATH=$GITHUB_WORKSPACE/6.7.1/gcc_64/bin:$PATH" >> $GITHUB_ENV
 
     - name: Build DXUI-Installer
       run: |
@@ -37,7 +33,7 @@ jobs:
         make
 
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
         name: DXUI-Installer
         path: DXUI-Installer
